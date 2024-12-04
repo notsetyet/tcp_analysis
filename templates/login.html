@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>登录</h1>
+    {% if error %}
+    <p style="color: #333;">{{ error }}</p>
+    {% endif %}
+    <form id="loginForm">
+        <label for="username">用户名：</label><input type="text" id="username" name="username" required><br>
+        <label for="password">密码：</label><input type="password" id="password" name="password" required><br>
+        <input type="submit" value="登录">
+    </form>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `username=${username}&password=${password}`
+            })
+             .then(response => response.json())  // 将响应解析为 JSON 格式
+             .then(data => {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        document.getElementById('loginForm').innerHTML += `<p style="color: #333;">${data.error}</p>`;
+                    }
+                });
+        });
+    </script>
+</body>
+
+</html>

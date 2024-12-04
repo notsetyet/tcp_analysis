@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>测试结果</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .result {
+            padding: 14px 20px;
+        }
+        .filename {
+            padding: 14px 20px;
+        }
+        .container {
+            padding: 20px;
+            text-align: left;
+        }
+        .pic {
+            text-align: center;
+            /* margin-left: 0%; */
+        }
+        .local {
+            text-align: center;
+        }
+        .remote {
+            text-align: center;
+        }
+        .dupack {
+            text-align: center;
+        }
+        .retrans {
+            text-align: center;
+        }
+        .malf {
+            text-align: center;
+        }
+        .ooo {
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label, select, input[type="file"], input[type="submit"] {
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+        }
+        select, input[type="file"], input[type="submit"] {
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/upload">文件上传</a>
+        <a href="/train">训练过程</a>
+        <a href="/test">测试结果</a>
+        <!-- <a text-align="right">退出</a> -->
+    </div>
+    <div class="filename">当前测试集：WNQEDSI</div>
+    <div class="filename">当前算法：CNN-LSTM-MHA</div>
+    <div class="pic">
+        <!-- <img src="../img/cnn_lstm_att.png" alt="Training Performance"> -->
+        <p id="local"> 本地延迟 准确率: {{accuracy_loc}}  F1 Score: {{f1_loc}}</p>
+        <img src="{{ url_for('static', filename='cm_local.png') }}" alt="Training Performance">
+        <p id="remote"> 远端延迟 准确率: {{accuracy_remo}}  F1 Score: {{f1_remo}}</p>
+        <img src="{{ url_for('static', filename='cm_remote.png') }}" alt="Training Performance">
+        <p id="dupack"> 重复确认 准确率: {{accuracy_dup}}  F1 Score: {{f1_dup}}</p>
+        <img src="{{ url_for('static', filename='cm_dupack.png') }}" alt="Training Performance">
+        <p id="retrans"> 重传 准确率: {{accuracy_ret}}  F1 Score: {{f1_ret}}</p>
+        <img src="{{ url_for('static', filename='cm_retrans.png') }}" alt="Training Performance">
+        <p id="malf"> 组件故障 准确率: {{accuracy_mal}}  F1 Score: {{f1_mal}}</p>
+        <img src="{{ url_for('static', filename='cm_malf.png') }}" alt="Training Performance">
+        <p id="ooo"> 乱序 准确率: {{accuracy_ooo}}  F1 Score: {{f1_ooo}}</p>
+        <img src="{{ url_for('static', filename='cm_ooo.png') }}" alt="Training Performance">
+    </div>
+    <div class="result">
+        <!-- <p id="loss"> 准确率: 80.2%</p>
+        <p id="f1_score">F1 Score: 0.776</p> -->
+    </div>
+        
+
+</body>
+<script>
+
+</script>
+
+</body>
+</html>

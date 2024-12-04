@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>文件上传</title>
+    <meta charset="UTF-8">
+  <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .container {
+            padding: 20px;
+            text-align: left;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label, select, input[type="file"], input[type="submit"] {
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+        }
+
+        select, input[type="file"], input[type="submit"] {
+            height: 40px;
+        }
+    </style>
+</head>
+<body onload="loadLastUpload()">
+<div class="navbar">
+    <a href="/upload">文件上传</a>
+    <a href="/train">训练过程</a>
+    <a href="/test">测试结果</a>
+    <!-- <a href="/pcap">抓包文件处理</a> -->
+</div>
+
+<div class="container">
+    <form onsubmit="uploadFile(event)" enctype="multipart/form-data">
+        <label for="file_type">选择文件类型:</label>
+        <select id="file_type" name="file_type">
+            <option value="">请选择文件类型</option>
+            <option value="training">训练文件</option>
+            <option value="testing">测试文件</option>
+        </select>
+        <label for="file_type">选择数据集文件:</label>
+        <!-- <select id="file_type" name="file_type">
+            <option value="">请选择数据集文件</option>
+            <option value="training">WNQADSI</option>
+            <option value="testing">DARPA</option>
+        </select> -->
+        <!-- <label for="file_type">选择模型类型:</label>
+        <select id="file_type" name="file_type">
+            <option value="">请选择模型类型</option>
+            <option value="training">CNN</option>
+            <option value="testing">RNN</option>
+        </select> -->
+        <input type="file" id="csv_file" name="csv_file" accept=".csv">
+        <input type="submit" value="上传">
+    </form>
+    <div id="upload_info"></div>
+</div>
+
+<script>
+    function loadLastUpload() {
+        fetch('/get_last_upload')
+            .then(response => response.json())
+            .then(data => {
+                if (data.file_name) {
+                    document.getElementById('upload_info').innerHTML = `文件：${data.file_name}，上传时间：${data.upload_time}`;
+                } else {
+                    document.getElementById('upload_info').innerHTML = '无最近上传记录';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function uploadFile(event) {
+        event.preventDefault(); // 阻止表单默认提交行为
+        var formData = new FormData();
+        formData.append('file_type', document.getElementById('file_type').value);
+        formData.append('csv_file', document.getElementById('csv_file').files[0]);
+
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "上传成功") {
+                    document.getElementById('file_type').value = '';  // 重置文件类型选择
+                    document.getElementById('upload_info').innerHTML = `文件：${data.file}，上传时间：${data.time}`;  // 显示文件名和时间
+                    if (data.training_image_url) {
+                        document.getElementById('training_process').style.display = 'block';
+                        document.getElementById('training_process').innerHTML = `
+                    <img src="${data.training_image_url}" alt="Training Process Image"/>
+                    <p>Loss: ${data.metrics.loss}</p>
+                    <p>Accuracy: ${data.metrics.accuracy}</p>
+                    <p>F1 Score: ${data.metrics.f1_score}</p>
+                `;
+                    }
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+    "name": "Flask Debug",
+    "type": "python",
+    "request": "launch",
+    "module": "flask",
+    "env": {
+        "FLASK_APP": "app.py",
+        "PYTHONPATH": "${workspaceFolder}; C:\\Users\\13522\\Desktop\\code_bishe\\yanzheng"
+    },
+    "args": [
+        "run"
+    ],
+    "jinja": true
+}
